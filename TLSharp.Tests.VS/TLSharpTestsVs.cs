@@ -79,5 +79,23 @@ namespace TLSharp.Tests
         {
             await base.SendMessageByUserNameTest();
         }
+
+        [TestMethod]
+        public override async Task CreateChatTest()
+        {
+            await base.CreateChatTest();
+        }
+
+        [TestMethod]
+        public override async Task RemoveChatTest()
+        {
+            await base.RemoveChatTest();
+        }
+
+        [TestMethod]
+        public override async Task AddUserToChat()
+        {
+            await base.AddUserToChat();
+        }
     }
 }

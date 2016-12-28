@@ -38,6 +38,8 @@ namespace TLSharp.Tests
 
         private int ApiId { get; set; }
 
+        private const string ChatTitle = "test 1";
+
         class Assert
         {
             static internal void IsNotNull(object obj)
@@ -342,30 +344,11 @@ namespace TLSharp.Tests
 
         public virtual async Task SendMessageByUserNameTest()
         {
-            UserNameToSendMessage = ConfigurationManager.AppSettings[nameof(UserNameToSendMessage)];
-            if (string.IsNullOrWhiteSpace(UserNameToSendMessage))
-                throw new Exception($"Please fill the '{nameof(UserNameToSendMessage)}' setting in app.config file first");
-
             var client = NewClient();
 
             await client.ConnectAsync();
 
-            var result = await client.SearchUserAsync(UserNameToSendMessage);
-
-            var user = result.users.lists
-                .Where(x => x.GetType() == typeof(TLUser))
-                .Cast<TLUser>()
-                .FirstOrDefault(x => x.username == UserNameToSendMessage.TrimStart('@'));
-
-            if (user == null)
-            {
-                var contacts = await client.GetContactsAsync();
-
-                user = contacts.users.lists
-                    .Where(x => x.GetType() == typeof(TLUser))
-                    .Cast<TLUser>()
-                    .FirstOrDefault(x => x.username == UserNameToSendMessage.TrimStart('@'));
-            }
+            var user = await SearchUser(client);
 
             if (user == null)
             {
@@ -375,6 +358,120 @@ namespace TLSharp.Tests
             await client.SendTypingAsync(new TLInputPeerUser() { user_id = user.id });
             Thread.Sleep(3000);
             await client.SendMessageAsync(new TLInputPeerUser() { user_id = user.id }, "TEST");
+        }
+
+        public virtual async Task CreateChatTest()
+        {
+            var client = NewClient();
+
+            await client.ConnectAsync();
+
+            var user = await SearchUser(client);
+
+            if (user?.access_hash == null)
+            {
+                throw new System.Exception("Usename was not found: " + UserNameToSendMessage);
+            }
+
+            var users = new TLVector<TLAbsInputUser>();
+            users.lists.Add(new TLInputUserSelf());
+            users.lists.Add(new TLInputUser
+            {
+                user_id = user.id,
+                access_hash = user.access_hash.Value
+            });
+            var r = new TLRequestCreateChat
+            {
+                title = ChatTitle,
+                users = users
+            };
+
+            var rusult = await client.SendRequestAsync<TLAbsUpdates>(r);
+        }
+
+        public virtual async Task RemoveChatTest()
+        {
+            var client = NewClient();
+
+            await client.ConnectAsync();
+
+            var rd = new TLRequestGetDialogs
+            {
+                offset_date = 0,
+                offset_id = 0,
+                offset_peer = new TLInputPeerEmpty(),
+                limit = 10
+            };
+
+            var dialogs = await client.SendRequestAsync<TLDialogs>(rd);
+
+            var chat = dialogs.chats.lists.Cast<TLChat>().FirstOrDefault(c => c.title == ChatTitle);
+
+            if (chat == null)
+                throw new Exception($"Chat {ChatTitle} not found");
+            var user = await SearchUser(client);
+
+            if (user?.access_hash == null)
+            {
+                throw new System.Exception("Usename was not found: " + UserNameToSendMessage);
+            }
+
+            var r = new TLRequestDeleteChatUser
+            {
+                user_id = new TLInputUser { user_id = user.id, access_hash = user.access_hash.Value},
+                chat_id = chat.id
+            };
+
+            var rusult = await client.SendRequestAsync<object>(r);
+            r = new TLRequestDeleteChatUser
+            {
+                user_id = new TLInputUserSelf(),
+                chat_id = chat.id,
+                
+            };
+
+            rusult = await client.SendRequestAsync<object>(r);
+        }
+
+        public virtual async Task AddUserToChat()
+        {
+            var client = NewClient();
+
+            await client.ConnectAsync();
+
+            var r = new TLRequestAddChatUser
+            {
+                chat_id = 167172477,
+                user_id = new TLInputUserSelf()
+            };
+
+            var rusult = await client.SendRequestAsync<object>(r);
+        }
+
+        private async Task<TLUser> SearchUser(TelegramClient client)
+        {
+            UserNameToSendMessage = ConfigurationManager.AppSettings[nameof(UserNameToSendMessage)];
+            if (string.IsNullOrWhiteSpace(UserNameToSendMessage))
+                throw new Exception($"Please fill the '{nameof(UserNameToSendMessage)}' setting in app.config file first");
+
+            var contacts = await client.GetContactsAsync();
+
+            var user = contacts.users.lists
+                .Where(x => x.GetType() == typeof(TLUser))
+                .Cast<TLUser>()
+                .FirstOrDefault(x => x.username == UserNameToSendMessage.TrimStart('@'));
+
+            if (user == null)
+            {
+                var result = await client.SearchUserAsync(UserNameToSendMessage);
+
+                user = result.users.lists
+                    .Where(x => x.GetType() == typeof(TLUser))
+                    .Cast<TLUser>()
+                    .FirstOrDefault(x => x.username.Equals(UserNameToSendMessage.TrimStart('@'), StringComparison.OrdinalIgnoreCase));
+            }
+
+            return user;
         }
     }
 }
