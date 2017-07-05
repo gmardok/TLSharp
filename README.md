@@ -1,20 +1,35 @@
-#TLSharp
+TLSharp
+-------------------------------
 
+<a href="https://www.paypal.me/IPirozhenko" title="Support project"><img src="https://img.shields.io/badge/Support%20project-paypal-brightgreen.svg"></a>
 [![Join the chat at https://gitter.im/TLSharp/Lobby](https://badges.gitter.im/TLSharp/Lobby.svg)](https://gitter.im/TLSharp/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build status](https://ci.appveyor.com/api/projects/status/95rl618ch5c4h2fa?svg=true)](https://ci.appveyor.com/project/sochix/tlsharp)
 [![NuGet version](https://badge.fury.io/nu/TLSharp.svg)](https://badge.fury.io/nu/TLSharp)
+<a href="https://github.com/sochix/telegram-tools"><img src=https://img.shields.io/badge/Telegram%20Tools-1.0.0-blue.svg /></a>
 
 _Unofficial_ Telegram (http://telegram.org) client library implemented in C#. Latest TL scheme supported, thanks to Afshin Arani
-
-**Consider donation to speed up development process.** 
-
-Bitcoin wallet: **3K1ocweFgaHnAibJ3n6hX7RNZWFTFcJjUe**
 
 It's a perfect fit for any developer who would like to send data directly to Telegram users or write own custom Telegram client.
 
 :star2: If you :heart: library, please star it! :star2:
 
-# Table of contents?
+# News
+* **JavaScript Telegram Client**
+	
+	Hi everyone! I want to create JavaScript client for Telegram, it will have next features:
+
+	* send & receieve messages from users/groups/channels
+	* easy installation with npm or yarn
+	* latest Telegram Schema
+	* examples and documentation
+
+	If you like this idea, please leave your email [here](http://eepurl.com/cBXX8n).
+
+* **TLSharp GUI**
+	
+	If you have difficulties with console or writing code, you can try [Telegram Tools](https://github.com/sochix/telegram-tools). It's a GUI for TLSharp.
+
+# Table of contents
 
 - [How do I add this to my project?](#how-do-i-add-this-to-my-project)
 - [Dependencies](#dependencies)
@@ -161,6 +176,7 @@ For your convenience TLSharp have wrappers for several Telegram API methods. You
 1. GetFile
 1. UploadFile
 1. SendPingAsync
+1. GetHistoryAsync
 
 **What if you can't find needed method at the list?**
 
@@ -186,7 +202,7 @@ Latest scheme in JSON format you can find [here](https://gist.github.com/aarani/
 
 # Contributing
 
-Contributing is highly appreciated!
+Contributing is highly appreciated! Donations required <a href="https://www.paypal.me/IPirozhenko" title="Support project"><img src="https://img.shields.io/badge/Support%20project-paypal-brightgreen.svg"></a>
 
 ## What things can I Implement (Project Roadmap)?
 
@@ -232,7 +248,7 @@ Without information listen above your issue will be closed.
 
 # Donations
 Thanks for donations! It's highly appreciated. 
-Bitcoin wallet: **3K1ocweFgaHnAibJ3n6hX7RNZWFTFcJjUe**
+<a href="https://www.paypal.me/IPirozhenko" title="Support project"><img src="https://img.shields.io/badge/Support%20project-paypal-brightgreen.svg"></a>
 
 List of donators:
 * [mtbitcoin](https://github.com/mtbitcoin)
